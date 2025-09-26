@@ -11,12 +11,12 @@ Qui troverai un progetto di data engineering che mostra come costruire una pipel
 
 # Obiettivi del progetto
 - Acquisizione dei dati
-Raccogliere file grezzi su prezzi delle criptovalute (BTC ed XMR) e su Google Trends, caricandoli in un bucket S3 (progetto-raw/dataset).
+Raccogliere file grezzi su prezzi delle criptovalute (BTC ed XMR) e su Google Trends, caricandoli in un bucket S3 (progettoaws-raw/dataset).
 
 - Pulizia e trasformazione
 Gestire valori mancanti nei prezzi (-1) con varie strategie.
 
-- Convertire i dati in formato .Parquet e salvarli in un bucket S3 (progetto-argento/).
+- Convertire i dati in formato .Parquet e salvarli in un bucket S3 (progettoaws-argento/).
 Applicare smoothing (es. media mobile a 10 giorni) per ridurre il rumore nei prezzi.
 
 - Unificazione dei dataset
@@ -65,3 +65,23 @@ AWS_PROJECT/
   - google_trend_bitcoin.csv
   - google_trend_monero.csv               
 - docs/
+
+## Workflow
+Upload dei dati grezzi nel bucket S3 'progettoaws-raw/dataset'
+Creazione di un secondo bucket 'progettoaws-argento' in cui si salveranno i file .Parquet
+
+1* Pipeline
+Nei file **jobBTC_step1.py e **jobXMR_step1.py si sono realizzate le operazioni di lettura dei dati BTC, XMR e googletrend e modifica di:
+1. Date utlizzando il 'to_datetime'
+2. Prezzo utilizzando il 'to_numeric' per trasformare la stringa in numero con virgola mobile
+3. Sostituire i valori presenti come '-1' con un dato medio dei precedenti 5 valori validi
+4. Convertire il campo 'Settimana' dei google trend in un valore numerico
+5. Esportare i risultati in formato .Parquet con il comando 'to_parquet'
+
+2* Pipeline
+Nei file **join_btctrend job.py e **join_xmrtrend job.py si relizzano le operazioni finali di:
+1. Lettura dei file .Parquet presenti nel bucket 'progettoaws-argento'
+2. Trasformazione in Dataframe con **pyarrow.parquet
+3. Calcolo della media mobile a 10 giorni dei prezzi ordianti per data crescente
+4. Join dei due file in base alla data presente
+5. Creazione del file output **joinbtct e **joinxmrt solo con i campi 'Date', 'Price_MA', 'interesse'
