@@ -85,3 +85,7 @@ Nei file <strong>join_btctrend job.py</strong> e <strong>join_xmrtrend job.py</s
 3. Calcolo della media mobile a 10 giorni dei prezzi ordianti per data crescente
 4. Join dei due file in base alla data presente
 5. Creazione del file output <strong>joinbtct</strong> e <strong>joinxmrt</strong> solo con i campi <strong><mark>'Date', 'Price_MA', 'interesse'</mark></strong>
+
+3* Pipeline 
+Inserimento dei file .Parquet in Redshift utilizzando i paramteri di connessione e i ruoli definiti con IAM
+I file sono immediatamente interrogabili tramite SQL
