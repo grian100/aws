@@ -47,7 +47,7 @@ AWS_PROJECT/
 - README.md
 - requirements.txt
 - src/
-  - Load_file_in_S3.py    # Upload dati grezzi in bucket raw
+  - Load_file_in_S3.py    # Upload dati grezzi in bucket progettoaws-raw/dataset
   - processing/
     - T1_bitcoin.py     # 1 Pipeline dataset bitcoin   
     - T1_monero.py      # 1 Pipeline dataset monero
