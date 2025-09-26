@@ -60,7 +60,6 @@ AWS_PROJECT/
     - XMR_EUR Kraken Historical Data.csv
     - google_trend_bitcoin.csv
     - google_trend_monero.csv               
-- docs/
 
 ## Workflow
 Upload dei dati grezzi nel bucket S3 'progettoaws-raw/dataset'
