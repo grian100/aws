@@ -44,24 +44,24 @@ Insight immediati su Redshift/QuickSight a supporto di trader, analisti e aziend
 
 ## Repository
 AWS_PROJECT/
-├─ README.md
-├─ requirements.txt
-├─ src/
-│  ├─ Load_file_in_S3.py    # Upload dati grezzi in bucket raw
-│  ├─ processing/
-│  │   ├─ T1_bitcoin.py     # 1 Pipeline dataset bitcoin   
-│  │   ├─ T1_monero.py      # 1 Pipeline dataset monero
-│  │   ├─ T2_bitcoin.py     # 2 Pipeline dataset bitcoin
-│  │   ├─ T2_monero.py      # 2 Pipeline dataset monero
-│  │   ├─ Load_bitcoin.py   # 3 Pipeline dataset bitcoin (Load)
-│  │   └─ Load_monero.py    # 3 Pipeline dataset monero (Load)
-│  ├─ orchestration/
-│  │   ├─ Step_F_graph.svg  # Immagine dell'orchestrazione      
-│  │   └─ Step_F_def.json   # orchestrazione con Step Functions
-│  └─ analytics/            # Quicksight
-├─ data/                    # dati originali
-│  ├─ BTC_EUR_Historical_Data.csv
-│  ├─ XMR_EUR Kraken Historical Data.csv
-│  ├─ google_trend_bitcoin.csv
-│  └─ google_trend_monero.csv               
-└─ docs/                    # altro
+- README.md
+- requirements.txt
+- src/
+  - Load_file_in_S3.py    # Upload dati grezzi in bucket raw
+  - processing/
+    - T1_bitcoin.py     # 1 Pipeline dataset bitcoin   
+    - T1_monero.py      # 1 Pipeline dataset monero
+    - T2_bitcoin.py     # 2 Pipeline dataset bitcoin
+    - T2_monero.py      # 2 Pipeline dataset monero
+    - Load_bitcoin.py   # 3 Pipeline dataset bitcoin (Load)
+    - Load_monero.py    # 3 Pipeline dataset monero (Load)
+  - orchestration/
+    - Step_F_graph.svg  # Immagine dell'orchestrazione      
+    - Step_F_def.json   # orchestrazione con Step Functions
+  - analytics/            # Quicksight
+ - data/                    # dati originali
+  - BTC_EUR_Historical_Data.csv
+  - XMR_EUR Kraken Historical Data.csv
+  - google_trend_bitcoin.csv
+  - google_trend_monero.csv               
+- docs/
