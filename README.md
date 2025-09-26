@@ -89,3 +89,6 @@ Creazione di un secondo bucket 'progettoaws-argento' in cui si salveranno i file
 3^ Pipeline 
 - Inserimento dei file .Parquet in Redshift utilizzando i paramteri di connessione e i ruoli definiti con IAM
 I file sono immediatamente interrogabili tramite SQL
+
+## Orchestrazione tramite Step Function
+Descrizione della macchina a stati in cui sono evidenziate i passaggi delle varie Pipeline descritte in <strong>stepfunctions_graph.svg</strong>
