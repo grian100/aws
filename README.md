@@ -27,11 +27,9 @@ Caricare i dati finali su Amazon Redshift, pronti per query SQL e analisi.
 
 - Creare dashboard interattive con Amazon QuickSight per esplorare pattern e trend (opzionale).
 
-- Architettura della pipeline
-Due pipeline parallele, una per BTC e una per XMR, indipendenti ma con struttura analoga.
+Architettura delle due pipeline parallele, una per BTC e una per XMR, indipendenti ma con struttura analoga.
 
-- Orchestrazione tramite AWS Step Functions
-Si procede i parallelo sia con BTC che XMR dal punto di partenza del caricamento dei dati, passando per l'analisi e modifica, completando con il join ed il caricamento in Redshift, tutte le sigole fasi sono accompagnate da possibili 'Fail State'
+Orchestrazione tramite AWS Step Functions procedendo in parallelo sia con BTC che XMR dal punto di partenza del caricamento dei dati, passando per l'analisi e modifica, completando con il join ed il caricamento in Redshift, tutte le singole fasi sono accompagnate da possibili 'Fail State'
 
 Valore e benefici
 Automazione completa del processo end-to-end (da dati grezzi a insight).
@@ -47,7 +45,7 @@ AWS_PROJECT/
 - README.md
 - requirements.txt
 - src/
-    - Load_file_in_S3.py     # Upload dati grezzi in bucket S3
+    - Load_file_in_S3.py   
       - processing/
         - jobBTC_step1.py             # 1 Pipeline dataset bitcoin   
         - jobXMR_step1.py             # 1 Pipeline dataset monero
@@ -56,8 +54,8 @@ AWS_PROJECT/
         - insert_btc_redshift job.py  # 3 Pipeline dataset bitcoin (Load)
         - insert_xmr_redshift job.py  # 3 Pipeline dataset monero (Load)
 - orchestration/
-    - stepfunctions_graph.svg  # Immagine dell'orchestrazione      
-- data/                # dati originali
+    - stepfunctions_graph.svg     
+- data/               
     - BTC_EUR_Historical_Data.csv
     - XMR_EUR Kraken Historical Data.csv
     - google_trend_bitcoin.csv
