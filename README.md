@@ -84,4 +84,4 @@ Nei file <strong>join_btctrend job.py</strong> e <strong>join_xmrtrend job.py</s
 2. Trasformazione in Dataframe con <strong>pyarrow.parquet</strong>
 3. Calcolo della media mobile a 10 giorni dei prezzi ordianti per data crescente
 4. Join dei due file in base alla data presente
-5. Creazione del file output <strong>joinbtct</strong> e <strong>joinxmrt</strong> solo con i campi 'Date', 'Price_MA', 'interesse'
+5. Creazione del file output <strong>joinbtct</strong> e <strong>joinxmrt</strong> solo con i campi <strong><mark>'Date', 'Price_MA', 'interesse'</mark></strong>
