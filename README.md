@@ -2,12 +2,12 @@
 Qui troverai un progetto di data engineering che mostra come costruire una pipeline dati utilizzando l'ecosistema AWS, con l’obiettivo di estrarre, trasformare e caricare (ETL) dati che fanno rifermento alle monete elettroniche Bitcoin e Monero, analizzandole in parallelo in un database Serverless Amazon Redshift.
 
 ## Servizi utilizzati
-- AWS S3 (Servizio cloud di archiviazione object oriented)
-- AWS Glue ETL (Servizio Serverless che facilita l'ELT, permette la creazione di job in Python Shell o Spark Shell)
-- AWS Secret Manager (Servizio di gestione sicura dei segreti ovvero dei dati sensibili come utenti e password per accedere ad un database)
-- AWS Step Functions (Servizio di orchestrazione interno ad AWS simile ad Apache Airflow)
-- AWS Redshift Serverless (Servizio di datawarehousing distribuito colonnare, noi useremo però la versione Serverless) -
-- AWS IAM Roles (Servizio di Identity and Access Management)
+- <strong>AWS S3</strong> (Servizio cloud di archiviazione object oriented)
+- <strong>AWS Glue ETL</strong> (Servizio Serverless che facilita l'ELT, permette la creazione di job in Python Shell o Spark Shell)
+- <strong>AWS Secret Manager</strong> (Servizio di gestione sicura dei segreti ovvero dei dati sensibili come utenti e password per accedere ad un database)
+- <strong>AWS Step Functions</strong> (Servizio di orchestrazione interno ad AWS simile ad Apache Airflow)
+- <strong>AWS Redshift Serverless</strong> (Servizio di datawarehousing distribuito colonnare, noi useremo però la versione Serverless) -
+- <strong>AWS IAM Roles</strong> (Servizio di Identity and Access Management)
 
 # Obiettivi del progetto
 - Acquisizione dei dati
@@ -47,7 +47,7 @@ AWS_PROJECT/
 - README.md
 - requirements.txt
 - src/
-    - Load_file_in_S3.py     # Upload dati grezzi in bucket progettoaws-raw/dataset
+    - Load_file_in_S3.py     # Upload dati grezzi in bucket S3
       - processing/
         - jobBTC_step1.py             # 1 Pipeline dataset bitcoin   
         - jobXMR_step1.py             # 1 Pipeline dataset monero
