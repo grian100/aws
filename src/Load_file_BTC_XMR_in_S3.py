@@ -5,8 +5,8 @@ from botocore.exceptions import ClientError
 
 logging.basicConfig(level=logging.ERROR)
 
-region_name = 'eu-west-3'
-bucket_name = 'progettoaws-raw'
+region_name = 'eu-central-1'
+bucket_name = 'progettoaws-raw/dataset'
 
 btc_historical = 'data/BTC_EUR_Historical_Data.csv'
 monero_historical = "data/XMR_EUR Kraken Historical Data.csv"
