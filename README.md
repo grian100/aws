@@ -58,8 +58,8 @@ AWS_PROJECT/
   - orchestration/
     - Step_F_graph.svg  # Immagine dell'orchestrazione      
     - Step_F_def.json   # orchestrazione con Step Functions
-  - analytics/            # Quicksight
- - data/                    # dati originali
+  - analytics/          # Quicksight
+ - data/                # dati originali
   - BTC_EUR_Historical_Data.csv
   - XMR_EUR Kraken Historical Data.csv
   - google_trend_bitcoin.csv
@@ -71,7 +71,7 @@ Upload dei dati grezzi nel bucket S3 'progettoaws-raw/dataset'
 Creazione di un secondo bucket 'progettoaws-argento' in cui si salveranno i file .Parquet
 
 1* Pipeline
-Nei file **jobBTC_step1.py e **jobXMR_step1.py si sono realizzate le operazioni di lettura dei dati BTC, XMR e googletrend e modifica di:
+Nei file <strong>jobBTC_step1.py</strong> e <strong>jobXMR_step1.py</strong> si sono realizzate le operazioni di lettura dei dati BTC, XMR e googletrend e modifica di:
 1. Date utlizzando il 'to_datetime'
 2. Prezzo utilizzando il 'to_numeric' per trasformare la stringa in numero con virgola mobile
 3. Sostituire i valori presenti come '-1' con un dato medio dei precedenti 5 valori validi
@@ -79,9 +79,9 @@ Nei file **jobBTC_step1.py e **jobXMR_step1.py si sono realizzate le operazioni 
 5. Esportare i risultati in formato .Parquet con il comando 'to_parquet'
 
 2* Pipeline
-Nei file **join_btctrend job.py e **join_xmrtrend job.py si relizzano le operazioni finali di:
+Nei file <strong>join_btctrend job.py</strong> e <strong>join_xmrtrend job.py</strong> si relizzano le operazioni finali di:
 1. Lettura dei file .Parquet presenti nel bucket 'progettoaws-argento'
-2. Trasformazione in Dataframe con **pyarrow.parquet
+2. Trasformazione in Dataframe con <strong>pyarrow.parquet</strong>
 3. Calcolo della media mobile a 10 giorni dei prezzi ordianti per data crescente
 4. Join dei due file in base alla data presente
-5. Creazione del file output **joinbtct e **joinxmrt solo con i campi 'Date', 'Price_MA', 'interesse'
+5. Creazione del file output <strong>joinbtct</strong> e <strong>joinxmrt</strong> solo con i campi 'Date', 'Price_MA', 'interesse'
