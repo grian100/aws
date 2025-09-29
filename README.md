@@ -43,7 +43,6 @@ Insight immediati su Redshift/QuickSight a supporto di trader, analisti e aziend
 ## Repository
 AWS_PROJECT/
 - README.md
-- requirements.txt
 - src/
     - Load_file_in_S3.py   
       - processing/
