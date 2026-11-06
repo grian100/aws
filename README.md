@@ -48,6 +48,7 @@ aws/
 ├── infra/                 # policy IAM di esempio per i job Glue e per Step Functions
 ├── data/                  # CSV grezzi: prezzi giornalieri (Investing.com) e Google Trends settimanale
 ├── images/                # grafici prodotti da analisi_locale.py
+├── notebooks/risultati.ipynb  # notebook con tutti i risultati, già eseguito
 ├── tests/test_cripto.py
 ├── analisi_locale.py      # esegue l'intera pipeline in locale, senza AWS
 ├── requirements.txt
@@ -113,10 +114,12 @@ Serve Python 3.9 o successivo. Dalla cartella del progetto:
 python -m pip install -r requirements.txt
 python analisi_locale.py     # pipeline completa sui CSV di data/: Parquet in output/, grafici in images/
 python -m pytest             # test
+python -m jupyter lab notebooks/risultati.ipynb   # notebook dei risultati
 ```
 I test usano i dati reali del repository e client S3 e Redshift simulati in memoria. Controllano tra l'altro che i prezzi stimati stiano tra quelli dei giorni vicini, che la media mobile usi solo il passato e che la DDL corrisponda alle colonne dei Parquet.
 
 # Risultati
+Tutti i risultati, con il confronto tra il metodo di pulizia originale e quello corretto, sono nel notebook [`notebooks/risultati.ipynb`](notebooks/risultati.ipynb), che esegue la stessa logica dei job Glue sui CSV del repository.
 ### Qualità dei dati
 | | Bitcoin | Monero |
 |---|---|---|
@@ -148,4 +151,5 @@ Interesse medio per classe di variazione settimanale del prezzo (query 3 di `sql
 
 - Prezzo e interesse sono correlati (0,6), ma soprattutto perché seguono gli stessi cicli di lungo periodo. Per Monero prezzo e interesse raggiungono il massimo insieme, ad aprile-maggio 2021. Per Bitcoin il prezzo tocca il massimo a marzo 2024, ma l'interesse medio del 2024 (31) resta sotto quello del 2021 (47): il nuovo record di prezzo non ha riportato l'attenzione ai livelli del 2021.
 - L'interesse non indica la <strong>direzione</strong> del prezzo: le variazioni settimanali dei due non sono correlate.
-- L'interesse cresce con l'<strong>ampiezza</strong> dei movimenti del prezzo, al rialzo o al ribasso. Nelle settimane con variazioni oltre il 10% l'interesse medio per Bitcoin è superiore del 54% rispetto alle settimane con variazioni sotto il 5%. La settimana di massimo interesse per Bitcoin (100, 16/05/2021) è anche una delle più negative, con il -20%.
+- L'interesse cresce con l'<strong>ampiezza</strong> dei movimenti del prezzo, al rialzo o al ribasso. Nelle settimane con variazioni oltre il 10% l'interesse medio per Bitcoin è superiore del 54% rispetto alle settimane con variazioni sotto il 5%. La settimana di massimo interesse per Bitcoin (100, 16/05/2021) è anche la quinta peggiore su 260, con il -20%.
+- I prezzi delle due monete si muovono insieme anche settimana per settimana: la correlazione delle variazioni settimanali è 0,67.

@@ -6,3 +6,4 @@ numpy>=1.21
 boto3>=1.26
 matplotlib>=3.5
 pytest>=7
+jupyterlab>=4
