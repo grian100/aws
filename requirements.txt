@@ -1,0 +1,8 @@
+# Esecuzione in locale e test. Nei job Glue (Python shell, Python 3.9, con le librerie di
+# analisi attive) pandas, pyarrow e boto3 sono già disponibili.
+pandas>=1.3
+pyarrow>=8
+numpy>=1.21
+boto3>=1.26
+matplotlib>=3.5
+pytest>=7

@@ -1,0 +1,230 @@
+{
+  "Comment": "Pipeline ETL di Bitcoin e Monero: le due criptovalute sono elaborate in parallelo, ogni fase attende la fine del job Glue (.sync)",
+  "StartAt": "Pipeline parallele",
+  "States": {
+    "Pipeline parallele": {
+      "Type": "Parallel",
+      "Branches": [
+        {
+          "StartAt": "Preparazione dei dati BTC",
+          "States": {
+            "Preparazione dei dati BTC": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::glue:startJobRun.sync",
+              "Parameters": {
+                "JobName": "cripto-prepara-dati",
+                "Arguments": {
+                  "--CRIPTO": "btc"
+                }
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": [
+                    "Glue.ConcurrentRunsExceededException",
+                    "Glue.OperationTimeoutException",
+                    "Glue.InternalServiceException"
+                  ],
+                  "IntervalSeconds": 30,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2
+                }
+              ],
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "States.ALL"
+                  ],
+                  "ResultPath": "$.errore",
+                  "Next": "Fail BTC"
+                }
+              ],
+              "ResultPath": null,
+              "Next": "Unione con Google Trends BTC"
+            },
+            "Unione con Google Trends BTC": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::glue:startJobRun.sync",
+              "Parameters": {
+                "JobName": "cripto-unisci-trend",
+                "Arguments": {
+                  "--CRIPTO": "btc"
+                }
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": [
+                    "Glue.ConcurrentRunsExceededException",
+                    "Glue.OperationTimeoutException",
+                    "Glue.InternalServiceException"
+                  ],
+                  "IntervalSeconds": 30,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2
+                }
+              ],
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "States.ALL"
+                  ],
+                  "ResultPath": "$.errore",
+                  "Next": "Fail BTC"
+                }
+              ],
+              "ResultPath": null,
+              "Next": "Caricamento su Redshift BTC"
+            },
+            "Caricamento su Redshift BTC": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::glue:startJobRun.sync",
+              "Parameters": {
+                "JobName": "cripto-carica-redshift",
+                "Arguments": {
+                  "--CRIPTO": "btc"
+                }
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": [
+                    "Glue.ConcurrentRunsExceededException",
+                    "Glue.OperationTimeoutException",
+                    "Glue.InternalServiceException"
+                  ],
+                  "IntervalSeconds": 30,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2
+                }
+              ],
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "States.ALL"
+                  ],
+                  "ResultPath": "$.errore",
+                  "Next": "Fail BTC"
+                }
+              ],
+              "ResultPath": null,
+              "End": true
+            },
+            "Fail BTC": {
+              "Type": "Fail",
+              "Error": "PipelineBTCFallita",
+              "Cause": "Un job della pipeline bitcoin non è terminato correttamente"
+            }
+          }
+        },
+        {
+          "StartAt": "Preparazione dei dati XMR",
+          "States": {
+            "Preparazione dei dati XMR": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::glue:startJobRun.sync",
+              "Parameters": {
+                "JobName": "cripto-prepara-dati",
+                "Arguments": {
+                  "--CRIPTO": "xmr"
+                }
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": [
+                    "Glue.ConcurrentRunsExceededException",
+                    "Glue.OperationTimeoutException",
+                    "Glue.InternalServiceException"
+                  ],
+                  "IntervalSeconds": 30,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2
+                }
+              ],
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "States.ALL"
+                  ],
+                  "ResultPath": "$.errore",
+                  "Next": "Fail XMR"
+                }
+              ],
+              "ResultPath": null,
+              "Next": "Unione con Google Trends XMR"
+            },
+            "Unione con Google Trends XMR": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::glue:startJobRun.sync",
+              "Parameters": {
+                "JobName": "cripto-unisci-trend",
+                "Arguments": {
+                  "--CRIPTO": "xmr"
+                }
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": [
+                    "Glue.ConcurrentRunsExceededException",
+                    "Glue.OperationTimeoutException",
+                    "Glue.InternalServiceException"
+                  ],
+                  "IntervalSeconds": 30,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2
+                }
+              ],
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "States.ALL"
+                  ],
+                  "ResultPath": "$.errore",
+                  "Next": "Fail XMR"
+                }
+              ],
+              "ResultPath": null,
+              "Next": "Caricamento su Redshift XMR"
+            },
+            "Caricamento su Redshift XMR": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::glue:startJobRun.sync",
+              "Parameters": {
+                "JobName": "cripto-carica-redshift",
+                "Arguments": {
+                  "--CRIPTO": "xmr"
+                }
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": [
+                    "Glue.ConcurrentRunsExceededException",
+                    "Glue.OperationTimeoutException",
+                    "Glue.InternalServiceException"
+                  ],
+                  "IntervalSeconds": 30,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2
+                }
+              ],
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "States.ALL"
+                  ],
+                  "ResultPath": "$.errore",
+                  "Next": "Fail XMR"
+                }
+              ],
+              "ResultPath": null,
+              "End": true
+            },
+            "Fail XMR": {
+              "Type": "Fail",
+              "Error": "PipelineXMRFallita",
+              "Cause": "Un job della pipeline monero non è terminato correttamente"
+            }
+          }
+        }
+      ],
+      "End": true
+    }
+  }
+}

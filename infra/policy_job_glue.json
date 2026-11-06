@@ -1,0 +1,64 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "LetturaDatiGrezziECodice",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::progettoaws-raw/dataset/*",
+        "arn:aws:s3:::progettoaws-raw/codice/*"
+      ]
+    },
+    {
+      "Sid": "LetturaScritturaArgento",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::progettoaws-argento/bitcoin/*",
+        "arn:aws:s3:::progettoaws-argento/monero/*"
+      ]
+    },
+    {
+      "Sid": "RedshiftDataApi",
+      "Effect": "Allow",
+      "Action": [
+        "redshift-data:BatchExecuteStatement",
+        "redshift-data:DescribeStatement",
+        "redshift-data:CancelStatement"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CredenzialiRedshift",
+      "Effect": "Allow",
+      "Action": [
+        "redshift-serverless:GetCredentials"
+      ],
+      "Resource": "arn:aws:redshift-serverless:<REGIONE>:<ACCOUNT_ID>:workgroup/<ID_WORKGROUP>"
+    },
+    {
+      "Sid": "SegretoRedshift",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": "arn:aws:secretsmanager:<REGIONE>:<ACCOUNT_ID>:secret:<NOME_SEGRETO>-*"
+    },
+    {
+      "Sid": "LogDeiJob",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:<REGIONE>:<ACCOUNT_ID>:log-group:/aws-glue/*"
+    }
+  ]
+}

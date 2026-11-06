@@ -1,0 +1,20 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AvvioJobGlue",
+      "Effect": "Allow",
+      "Action": [
+        "glue:StartJobRun",
+        "glue:GetJobRun",
+        "glue:GetJobRuns",
+        "glue:BatchStopJobRun"
+      ],
+      "Resource": [
+        "arn:aws:glue:<REGIONE>:<ACCOUNT_ID>:job/cripto-prepara-dati",
+        "arn:aws:glue:<REGIONE>:<ACCOUNT_ID>:job/cripto-unisci-trend",
+        "arn:aws:glue:<REGIONE>:<ACCOUNT_ID>:job/cripto-carica-redshift"
+      ]
+    }
+  ]
+}
