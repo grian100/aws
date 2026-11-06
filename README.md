@@ -8,6 +8,7 @@ Progetto di data engineering che costruisce una pipeline ETL sull'ecosistema AWS
 - <strong>Amazon Redshift Serverless</strong> (data warehouse colonnare distribuito, nella versione serverless), interrogato tramite la <strong>Redshift Data API</strong>
 - <strong>AWS Secrets Manager</strong> (gestione sicura dei segreti, come utenti e password di un database)
 - <strong>AWS IAM</strong> (Identity and Access Management), per i permessi di job, macchina a stati e Redshift
+- <strong>FastAPI</strong> e <strong>Uvicorn</strong> per l'API REST sui risultati
 - <strong>pandas</strong> e <strong>PyArrow</strong> per le trasformazioni, <strong>boto3</strong> per S3 e Redshift, <strong>pytest</strong> per i test, <strong>Matplotlib</strong> per i grafici
 
 # Obiettivi del progetto
@@ -34,7 +35,8 @@ data/*.csv --(src/carica_su_s3.py)--> s3://progettoaws-raw/dataset/
 aws/
 ├── src/
 │   ├── cripto.py          # tutta la logica della pipeline: trasformazioni, S3, Redshift
-│   └── carica_su_s3.py    # carica su S3 i CSV grezzi e il codice dei job
+│   ├── carica_su_s3.py    # carica su S3 i CSV grezzi e il codice dei job
+│   └── api.py             # API REST (FastAPI) sui risultati della pipeline
 ├── glue/                  # job Glue (Python shell), uno per fase, parametrizzati per moneta
 │   ├── prepara_dati.py
 │   ├── unisci_trend.py
@@ -49,7 +51,9 @@ aws/
 ├── data/                  # CSV grezzi: prezzi giornalieri (Investing.com) e Google Trends settimanale
 ├── images/                # grafici prodotti da analisi_locale.py
 ├── notebooks/risultati.ipynb  # notebook con tutti i risultati, già eseguito
-├── tests/test_cripto.py
+├── tests/
+│   ├── test_cripto.py
+│   └── test_api.py
 ├── analisi_locale.py      # esegue l'intera pipeline in locale, senza AWS
 ├── requirements.txt
 └── pytest.ini
@@ -115,8 +119,56 @@ python -m pip install -r requirements.txt
 python analisi_locale.py     # pipeline completa sui CSV di data/: Parquet in output/, grafici in images/
 python -m pytest             # test
 python -m jupyter lab notebooks/risultati.ipynb   # notebook dei risultati
+python -m uvicorn api:app --app-dir src           # API REST su http://localhost:8000
 ```
 I test usano i dati reali del repository e client S3 e Redshift simulati in memoria. Controllano tra l'altro che i prezzi stimati stiano tra quelli dei giorni vicini, che la media mobile usi solo il passato e che la DDL corrisponda alle colonne dei Parquet.
+
+# API REST
+L'API espone i risultati della pipeline. Avvio, dalla cartella del progetto e con le dipendenze installate:
+```bash
+python -m uvicorn api:app --app-dir src --host 0.0.0.0 --port 8000
+```
+La documentazione interattiva, da cui si possono provare le richieste, è su http://localhost:8000/docs.
+
+| Metodo | Percorso | Descrizione |
+|---|---|---|
+| GET | `/health` | verifica che il servizio sia attivo |
+| GET | `/monete` | monete disponibili, periodo coperto, giorni con prezzo stimato |
+| GET | `/monete/{moneta}/prezzi` | prezzi giornalieri puliti e media mobile a 10 giorni; con `solo_stimati=true` solo i giorni con prezzo stimato |
+| GET | `/monete/{moneta}/settimanale` | prezzi settimanali e interesse su Google Trends |
+| GET | `/monete/{moneta}/statistiche` | correlazioni tra prezzo e interesse e interesse medio per ampiezza della variazione settimanale |
+| GET | `/confronto` | Bitcoin e Monero settimana per settimana, con le correlazioni tra le due monete |
+
+`{moneta}` può essere `btc`, `xmr`, `bitcoin` o `monero`. Tutti gli endpoint tranne `/health` e `/monete` accettano i filtri `dal` e `al` (date nel formato AAAA-MM-GG, estremi inclusi). Esempio:
+```bash
+curl "http://localhost:8000/monete/btc/statistiche?dal=2023-01-01"
+```
+```json
+{
+  "moneta": "bitcoin",
+  "dal": "2023-01-01",
+  "al": "2024-03-03",
+  "settimane": 62,
+  "correlazione_prezzo_interesse": 0.703,
+  "correlazione_variazioni": 0.516,
+  "correlazione_variazione_assoluta_interesse": 0.391,
+  "interesse_per_variazione": [
+    {"variazione_settimanale": "meno del 5%", "settimane": 42, "interesse_medio": 20.3},
+    {"variazione_settimanale": "dal 5 al 10%", "settimane": 10, "interesse_medio": 26.5},
+    {"variazione_settimanale": "oltre il 10%", "settimane": 10, "interesse_medio": 24.9}
+  ]
+}
+```
+I filtri permettono di vedere come cambiano le relazioni nel tempo. Dal 2023, per esempio, le variazioni settimanali di prezzo e interesse di Bitcoin hanno correlazione 0,52, mentre sull'intero periodo è praticamente nulla (-0,03). Su periodi brevi le stime sono però basate su poche settimane: 62 in questo esempio, solo 10 per classe di variazione. Le correlazioni non calcolabili, per esempio su un periodo senza dati, sono `null`. Richieste non valide, come una moneta sconosciuta (404) o `dal` successivo ad `al` (422), ricevono un errore con il dettaglio del problema.
+
+Configurazione tramite variabili d'ambiente:
+- `CRIPTO_DATI`: da dove leggere le tabelle.
+  - Se non è impostata, le tabelle vengono calcolate all'avvio dai CSV di `data/`, in meno di un secondo: l'API funziona subito dopo il clone.
+  - Una cartella con i Parquet della pipeline, per esempio `output` prodotta da `analisi_locale.py`.
+  - `s3://progettoaws-argento`, il bucket in cui scrivono i job Glue, con le credenziali AWS configurate e il permesso `s3:GetObject`.
+- `CRIPTO_API_KEY`: se impostata, tutte le richieste tranne `/health` devono contenere l'header `X-API-Key` con questo valore, altrimenti ricevono errore 401.
+
+I dati vengono letti una sola volta, all'avvio: dopo una nuova esecuzione della pipeline basta riavviare il servizio. In produzione il servizio va esposto tramite HTTPS, per esempio dietro un reverse proxy.
 
 # Risultati
 Tutti i risultati, con il confronto tra il metodo di pulizia originale e quello corretto, sono nel notebook [`notebooks/risultati.ipynb`](notebooks/risultati.ipynb), che esegue la stessa logica dei job Glue sui CSV del repository.
